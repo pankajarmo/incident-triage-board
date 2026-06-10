@@ -31,6 +31,11 @@ export default function TriageBoard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: input }),
       });
+      if (res.status === 401) {
+        // Session expired or missing — send the user back to sign in.
+        window.location.href = "/login";
+        return;
+      }
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? `Request failed (${res.status}).`);

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { classify } from "@/lib/triage/classify";
 import { MAX_MESSAGE_LENGTH } from "@/lib/triage/constants";
 import { openaiRateUrgency } from "@/lib/triage/openai-urgency";
+import { readSession } from "@/lib/auth/session";
 
 // Classification runs server-side so the rule-3 LLM call (Phase 3) and its key
 // never reach the browser. Rules 1 & 2 are deterministic but run here too for a
@@ -10,6 +11,13 @@ import { openaiRateUrgency } from "@/lib/triage/openai-urgency";
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  // Authoritative auth check at the data source (the proxy gate is optimistic and
+  // does not run on /api/*). No valid session → no triage.
+  const session = await readSession();
+  if (!session) {
+    return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();
