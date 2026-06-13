@@ -93,17 +93,6 @@ export default function TriageBoard() {
           >
             {status === "loading" ? "Triaging…" : "Triage"}
           </button>
-          <span className="text-xs text-zinc-400">or try an example:</span>
-          {EXAMPLES.map((ex) => (
-            <button
-              key={ex}
-              type="button"
-              onClick={() => setInput(ex)}
-              className="rounded-full border border-zinc-300 px-2 py-1 text-xs text-zinc-600 outline-none hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-blue-600 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-            >
-              {ex.length > 28 ? ex.slice(0, 28) + "…" : ex}
-            </button>
-          ))}
         </div>
       </form>
 
